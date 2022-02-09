@@ -1,0 +1,15 @@
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%
+}
+
+.logo .ant-btn {
+    background: #000;
+    border: 0;
+}
+
+.logo .ant-btn:hover {
+    background: #2c2c2c;
+}

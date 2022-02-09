@@ -1,0 +1,22 @@
+.survey-head {
+    width: 800px;
+    border: 2px solid #000;
+    background: #feff9c;    
+    padding: 8px 16px;
+    margin: auto;
+    margin-bottom: 24px;    
+}
+
+.steps {
+    width: 800px;
+    margin: auto;
+    margin-bottom: 24px;
+}
+
+.survey-body {
+    width: 800px;
+    border: 2px solid #000;
+    background: #fff;    
+    padding: 8px 16px;
+    margin: auto;
+}
