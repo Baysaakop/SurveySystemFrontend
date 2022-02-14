@@ -1,19 +1,21 @@
 import { Button, Table, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons/lib/icons';
-import SurveyService from './SurveyService';
+import QuestionService from './QuestionService';
 
-function SurveyList () {
+function QuestionList (props) {
 
     const [data, setData] = useState()
 
-    useEffect(() => {
+    useEffect(() => {        
         getData()
     }, [])
 
     function getData() {
-        SurveyService
-        .getSurveys()
+        const queryParams = new URLSearchParams(props.location.search)
+        const survey_id = queryParams.get("survey")
+        QuestionService
+        .getQuestions(survey_id)
         .then(res => {
             console.log(res.data)
             setData(res.data)
@@ -30,23 +32,17 @@ function SurveyList () {
             key: 'id',
         },
         {
-            title: 'Survey',
-            dataIndex: 'survey',
-            key: 'survey',
-        },
-        {
-            title: 'Participants',
-            dataIndex: 'participants',
-            key: 'participants',
+            title: 'Question',
+            dataIndex: 'question',
+            key: 'question',
         },
         {
             title: 'Action',            
             dataIndex: 'id',
             key: 'action',
             render: (id) => (
-                <Space size="middle">
-                    <Button type='primary' href={`/surveys/${id}`}>Participate</Button>
-                    <Button type='dashed' href={`/edit-survey/${id}`}>Update</Button>
+                <Space size="middle">                    
+                    <Button type='dashed' href={`/edit-question/${id}`}>Update</Button>
                     <Button danger type='dashed'>Delete</Button>
                 </Space>
             )
@@ -56,16 +52,16 @@ function SurveyList () {
     return (
         <div>
             <Button 
-                href='/add-survey'
+                href='/add-question'
                 type='primary' 
                 icon={<PlusCircleOutlined />} 
                 style={{ marginBottom: '16px', background: 'purple', border: 0 }}
             >
-                Add Survey
+                Add Question
             </Button>
             <Table dataSource={data} columns={columns} />
         </div>
     )
 }
 
-export default SurveyList
+export default QuestionList

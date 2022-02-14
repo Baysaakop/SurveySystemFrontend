@@ -7,7 +7,7 @@ function CustomMenu (props) {
     return (                                  
         <div className='menu'>
             <div className='logo'>
-                <Link to='/'>
+                <Link to='/surveys'>
                     <Button type='primary' size='large'>E-SURVEY</Button>
                 </Link>
             </div>
