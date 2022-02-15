@@ -1,22 +1,23 @@
 import { Button, Table, Space, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
 import { BackwardOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
-import QuestionService from './QuestionService';
+import AnswerService from './AnswerService';
 
-function QuestionList (props) {
+function AnswerList (props) {
 
     const [data, setData] = useState()
-    const [survey, setSurvey] = useState()
+    const [question, setQuestion] = useState()
 
     useEffect(() => {        
         getData()
     }, [])
 
     function getData() {        
-        const survey_id = props.match.params.survey_id
-        setSurvey(survey_id)
-        QuestionService
-        .getQuestions(survey_id)
+        console.log(props)
+        const question_id = props.match.params.question_id
+        setQuestion(question_id)
+        AnswerService
+        .getAnswers(question_id)
         .then(res => {
             console.log(res.data)
             setData(res.data)
@@ -27,8 +28,8 @@ function QuestionList (props) {
     }
 
     function onDelete(id) {
-        QuestionService
-        .deleteQuestion(id)
+        AnswerService
+        .deleteAnswer(id)
         .then(res => {
             getData()
         })
@@ -44,9 +45,9 @@ function QuestionList (props) {
             key: 'id',
         },
         {
-            title: 'Question',
-            dataIndex: 'question',
-            key: 'question',
+            title: 'Answer',
+            dataIndex: 'answer',
+            key: 'answer',
         },
         {
             title: 'Action',            
@@ -54,8 +55,8 @@ function QuestionList (props) {
             key: 'action',
             render: (id) => (
                 <Space size="middle">                    
-                    <Button type='dashed' href={`/edit-survey/${survey}/edit-question/${id}`}>Update</Button>
-                    <Popconfirm title="Are you sure to delete this question?" onConfirm={() => onDelete(id)}>
+                    <Button type='dashed' href={`/edit-survey/${props.match.params.survey_id}/edit-question/${props.match.params.question_id}/edit-answer/${id}`}>Update</Button>
+                    <Popconfirm title="Are you sure to delete this answer?" onConfirm={() => onDelete(id)}>
                         <Button danger type='dashed'>Delete</Button>
                     </Popconfirm>
                 </Space>
@@ -66,17 +67,17 @@ function QuestionList (props) {
     return (
         <div>
             <Button 
-                href={`/edit-survey/${survey}/add-question`}
+                href={`/edit-survey/${props.match.params.survey_id}/edit-question/${question}/add-answer`}
                 type='primary' 
                 icon={<PlusCircleOutlined />} 
                 style={{ marginBottom: '16px', background: 'purple', border: 0 }}
             >
-                Add Question
+                Add Answer
             </Button>
             <Table dataSource={data} columns={columns} />
-            <Button icon={<BackwardOutlined />} href="/surveys" style={{ marginTop: '24px' }}>Go back to surveys</Button>
+            <Button icon={<BackwardOutlined />} href={`/edit-survey/${props.match.params.survey_id}/questions`} style={{ marginTop: '24px' }}>Go back to questions</Button>
         </div>
     )
 }
 
-export default QuestionList
+export default AnswerList

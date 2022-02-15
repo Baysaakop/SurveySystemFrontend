@@ -1,23 +1,23 @@
+import { BackwardOutlined } from "@ant-design/icons/lib/icons"
 import { Button, Input, Typography, Form, Spin } from "antd"
 import { useState, useEffect } from "react"
-import SurveyService from "./SurveyService"
+import QuestionService from "./QuestionService"
 
-function UpdateSurvey (props) {
+function UpdateQuestion (props) {
 
     const [form] = Form.useForm()
-    const [survey, setSurvey] = useState()    
+    const [question, setQuestion] = useState()    
 
-    useEffect(() => {        
-        getSurvey()        
+    useEffect(() => {                
+        getQuestion()        
     }, [props.match])
 
-    function getSurvey() {        
+    function getQuestion() {
         const id = props.match.params.id;
-        SurveyService
-        .getSurveyById(id)
-        .then(res => {
-            console.log(res.data)            
-            setSurvey(res.data)
+        QuestionService
+        .getQuestionById(id)
+        .then(res => {             
+            setQuestion(res.data)
         })
         .catch(err => {
             console.log(err)
@@ -25,10 +25,11 @@ function UpdateSurvey (props) {
     }
 
     function onFinish(values) {                
-        SurveyService
-        .updateSurvey(survey.id, values)
+        const survey_id = props.match.params.survey_id
+        QuestionService
+        .updateQuestion(question.id, values)
         .then(res => {
-            props.history.push("/surveys")           
+            props.history.push(`/edit-survey/${survey_id}/questions`)            
         })
         .catch(err => {
             console.log(err)
@@ -36,22 +37,19 @@ function UpdateSurvey (props) {
     }
 
     return (
-        survey ? (
+        question ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
                 <div style={{ width: '600px', border: '2px solid #000', borderRadius: '4px', background: '#fff', padding: '24px' }}>
-                    <Typography.Title level={4}>Update survey</Typography.Title>
+                    <Typography.Title level={4}>Update question</Typography.Title>
                     <Form form={form} layout="vertical" onFinish={onFinish}>
-                        <Form.Item label="Name" name="survey" rules={[{ required: true }]}>
-                            <Input defaultValue={survey.survey} />
-                        </Form.Item>
-                        <Form.Item label="Description" name="description" rules={[{ required: true }]}>
-                            <Input.TextArea rows={6} defaultValue={survey.description} />
+                        <Form.Item label="Name" name="question" rules={[{ required: true }]}>
+                            <Input defaultValue={question.question} />
                         </Form.Item>
                         <Button block type="primary" htmlType="submit">Submit</Button>
                     </Form> 
                     <div style={{ textAlign: 'center', marginTop: '8px' }}>
-                        <Button href={`/edit-survey/${survey.id}/questions`} type="link">Edit questions</Button>
-                    </div>
+                        <Button href={`/edit-survey/${props.match.params.survey_id}/edit-question/${question.id}/answers`} type="link">Edit answers</Button>
+                    </div>                    
                 </div>
             </div>
         ) : (
@@ -62,4 +60,4 @@ function UpdateSurvey (props) {
     )
 }
 
-export default UpdateSurvey
+export default UpdateQuestion

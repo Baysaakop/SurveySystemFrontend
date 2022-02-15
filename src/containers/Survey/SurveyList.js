@@ -1,4 +1,4 @@
-import { Button, Table, Space } from 'antd';
+import { Button, Table, Space, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons/lib/icons';
 import SurveyService from './SurveyService';
@@ -17,6 +17,17 @@ function SurveyList () {
         .then(res => {
             console.log(res.data)
             setData(res.data)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
+    function onDelete(id) {
+        SurveyService
+        .deleteSurvey(id)
+        .then(res => {
+            getData()
         })
         .catch(err => {
             console.log(err)
@@ -47,7 +58,9 @@ function SurveyList () {
                 <Space size="middle">
                     <Button type='primary' href={`/surveys/${id}`}>Participate</Button>
                     <Button type='dashed' href={`/edit-survey/${id}`}>Update</Button>
-                    <Button danger type='dashed'>Delete</Button>
+                    <Popconfirm title="Are you sure to delete this survey?" onConfirm={() => onDelete(id)}>
+                        <Button danger type='dashed'>Delete</Button>
+                    </Popconfirm>
                 </Space>
             )
         },
@@ -63,7 +76,7 @@ function SurveyList () {
             >
                 Add Survey
             </Button>
-            <Table dataSource={data} columns={columns} />
+            <Table dataSource={data} columns={columns} />            
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { Button, Radio, Space, Spin, Steps, Typography } from "antd";
+import { Button, message, Radio, Space, Spin, Steps, Typography } from "antd";
 import { useEffect, useState } from "react"
 import './SurveyDetail.css'
 import SurveyService from "./SurveyService";
@@ -6,6 +6,7 @@ import SurveyService from "./SurveyService";
 function SurveyDetail (props) {
     const [step, setStep] = useState(0)
     const [survey, setSurvey] = useState()    
+    const [responses, setResponses] = useState([])
 
     useEffect(() => {        
         getSurvey()        
@@ -17,7 +18,7 @@ function SurveyDetail (props) {
         .getSurveyById(id)
         .then(res => {
             console.log(res.data)            
-            setSurvey(res.data)
+            setSurvey(res.data)            
         })
         .catch(err => {
             console.log(err)
@@ -25,15 +26,41 @@ function SurveyDetail (props) {
     }
 
     function onStart() {
+        survey.questions.forEach(q => {
+            const row = {
+                question: q.id,
+                answer: undefined
+            }
+            responses.push(row)
+        });
         setStep(1)
     }
 
     function onNext() {
+        const item = responses.find(x => x.question === survey.questions[step - 1].id) 
+        if (item.answer === undefined) {
+            message.error("You must choose your answer to continue.")
+            return;
+        }
         setStep(step + 1)
     }
 
     function onPrev() {
         setStep(step - 1)
+    }
+
+    function onFinish() {
+        const data = {
+            email: 'baysaakop@gmail.com'            
+        }
+        SurveyService
+        .createUserResponse(survey.id, data)
+        .then(res => {
+            console.log(res)            
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
 
     function getStatus(num) {
@@ -46,13 +73,28 @@ function SurveyDetail (props) {
         }
     }
 
+    function getIndex(q) {
+        return survey.questions.indexOf(q)
+    }
+
+    function onSelectAnswer(e) {        
+        const item = responses.find(x => x.question === survey.questions[step - 1].id) 
+        item.answer = e.target.value         
+        console.log(responses)       
+    }
+
+    function getSelectedAnswer() {
+        const item = responses.find(x => x.question === survey.questions[step - 1].id) 
+        return item.answer
+    }
+
     return (        
         survey ? (
             <div className="survey">                   
                 <div className="steps">
                     <Steps size="small" current={step - 1}>
                         {survey.questions.map(q => (
-                            <Steps.Step title={getStatus(q.id)} />    
+                            <Steps.Step title={getStatus(getIndex(q) + 1)} />    
                         ))}                                 
                     </Steps>
                 </div>
@@ -81,7 +123,7 @@ function SurveyDetail (props) {
                             <Typography.Title level={4}>
                                 {step}. {survey.questions[step - 1].question}
                             </Typography.Title>
-                            <Radio.Group>
+                            <Radio.Group defaultValue={getSelectedAnswer} onChange={onSelectAnswer}>
                                 <Space direction="vertical">
                                     {survey.questions[step - 1].answers.map(answer => (
                                         <Radio value={answer.id}>
@@ -104,6 +146,13 @@ function SurveyDetail (props) {
                                     onClick={onNext}
                                 >
                                     Next
+                                </Button>
+                                <Button 
+                                    type="primary" 
+                                    size="large" 
+                                    onClick={onFinish}
+                                >
+                                    FINISH
                                 </Button>
                             </div>
                         </div>

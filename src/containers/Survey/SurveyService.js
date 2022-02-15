@@ -19,6 +19,15 @@ class SurveyService {
         return axios.put(api.surveys + "/" + id, data)
     }
 
+    deleteSurvey(id) {
+        return axios.delete(api.surveys + "/" + id)
+    }
+
+    createUserResponse(survey_id, data) {
+        return axios.post(api.userResponses + "?survey_id=" + survey_id, data)
+    }
+
+
 }
 
 export default new SurveyService()
