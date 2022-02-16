@@ -27,6 +27,13 @@ class SurveyService {
         return axios.post(api.userResponses + "?survey_id=" + survey_id, data)
     }
 
+    getUserResponses(survey_id) {
+        return axios.get(api.userResponses + "?survey_id=" + survey_id)
+    }
+
+    // createUserResponse(data) {
+    //     return axios.post(api.userResponses, data)
+    // }
 
 }
 
